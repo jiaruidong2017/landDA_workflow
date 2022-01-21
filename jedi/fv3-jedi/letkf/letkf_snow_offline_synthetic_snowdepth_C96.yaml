@@ -25,12 +25,12 @@ background:
  date: &date XXYYYY-XXMM-XXDDTXXHH:00:00Z
  members:
    - filetype: gfs
-     state variables: [snwdph,smc,slmsk]
+     state variables: [snwdph,slmsk]
      datapath: mem_pos/
      filename_sfcd: XXYYYYXXMMXXDD.XXHH0000.sfc_data.nc
      filename_cplr: XXYYYYXXMMXXDD.XXHH0000.coupler.res
    - filetype: gfs
-     state variables: [snwdph,smc,slmsk]
+     state variables: [snwdph,slmsk]
      datapath: mem_neg/
      filename_sfcd: XXYYYYXXMMXXDD.XXHH0000.sfc_data.nc
      filename_cplr: XXYYYYXXMMXXDD.XXHH0000.coupler.res
@@ -38,7 +38,7 @@ background:
 observations:
 - obs space:
     name: Simulate
-    distribution: Halo
+    distribution: InefficientDistribution
     simulated variables: [totalSnowDepth]
     obsdatain:
       obsfile: synth_XXYYYYXXMMXXDD.nc
@@ -46,13 +46,13 @@ observations:
     name: Identity
   obs error:
     covariance model: diagonal
-  obs localization:
-    search method: kd_tree
+  obs localizations:
+  - localization method: Horizontal SOAR
     lengthscale: 250e3
-    localization method: Brasnett99
     soar horizontal decay: 0.000021
-    vertical lengthscale: 700
     max nobs: 1
+  - localization method: Vertical Brasnett
+    vertical lengthscale: 700
   obs filters:
   - filter: Bounds Check # negative / missing snow
     filter variables:
@@ -69,11 +69,12 @@ observations:
         name: slmsk@GeoVaLs
       minvalue: 0.5
       maxvalue: 1.5
-  - filter: RejectList  # no land-ice
-    where:
-    - variable:
-        name: smc@GeoVaLs
-      minvalue: 0.9
+#  - filter: RejectList  # no land-ice
+#    where:
+#    - variable:
+#        name: vtype@GeoVaLs
+#      minvalue: 14.5
+#      maxvalue: 15.5
   - filter: Background Check # gross error check
     filter variables:
     - name: totalSnowDepth
@@ -92,9 +93,6 @@ local ensemble DA:
     rtps: 0.0
     rtpp: 0.0
     mult: 1.0
-
-prints:
-  frequency: PT3H
 
 output increment:
   filetype: gfs

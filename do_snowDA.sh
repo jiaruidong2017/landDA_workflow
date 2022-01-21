@@ -16,15 +16,17 @@
 
 # user directories
 
-WORKDIR=${WORKDIR:-"/scratch2/BMC/gsienkf/Clara.Draper/workdir/"}
-SCRIPTDIR=/scratch2/BMC/gsienkf/Clara.Draper/gerrit-hera/AZworkflow/landDA_workflow/
-OBSDIR=/scratch2/BMC/gsienkf/Clara.Draper/data_AZ/
-OUTDIR=${SCRIPTDIR}/../output/
+WORKDIR=${WORKDIR:-"/scratch1/NCEPDEV/global/Jiarui.Dong/JEDI/workflow/experiment22/workdir/"}
+SCRIPTDIR=/scratch1/NCEPDEV/global/Jiarui.Dong/JEDI/workflow/experiment22/landDA_workflow/
+OBSDIR=/scratch1/NCEPDEV/global/Jiarui.Dong/JEDI/workflow
+OUTDIR=/scratch1/NCEPDEV/global/Jiarui.Dong/JEDI/workflow/experiment22/output/
 LOGDIR=${OUTDIR}/DA/logs/
 #RSTRDIR=/scratch2/BMC/gsienkf/Clara.Draper/DA_test_cases/20191215_C48/ #C48
 #RSTRDIR=/scratch2/BMC/gsienkf/Clara.Draper/jedi/create_ens/mem_base/  #C768 
 #RSTRDIR=/scratch2/BMC/gsienkf/Clara.Draper/data_RnR/example_restarts/ # C96 Noah-MP
 RSTRDIR=$WORKDIR/restarts/tile # is running offline cycling will be here
+
+analdate="PATH TO THE analdate.sh"
 
 # DA options (select "YES" to assimilate)
 ASSIM_IMS=NO
@@ -39,12 +41,12 @@ INCR_EXECDIR=${SCRIPTDIR}/AddJediIncr/exec/
 
 # JEDI FV3 Bundle directories
 
-JEDI_EXECDIR=/scratch2/BMC/gsienkf/Clara.Draper/jedi/build/bin/
+JEDI_EXECDIR=/scratch1/NCEPDEV/global/Jiarui.Dong/JEDI/workflow/fv3-bundle/build/bin/
 JEDI_STATICDIR=${SCRIPTDIR}/jedi/fv3-jedi/Data/
 
 # JEDI IODA-converter bundle directories
 
-IODA_BUILD_DIR=/scratch2/BMC/gsienkf/Clara.Draper/jedi/src/ioda-bundle/build/
+IODA_BUILD_DIR=/scratch1/NCEPDEV/global/Jiarui.Dong/JEDI/workflow/ioda-bundle/build/
 
 # EXPERIMENT SETTINGS
 
@@ -56,9 +58,11 @@ B=30  # back ground error std.
 
 SAVE_IMS="YES" # "YES" to save processed IMS IODA file
 SAVE_INCR="YES" # "YES" to save increment (add others?) JEDI output
-SAVE_TILE="NO" # "YES" to save background in tile space
+SAVE_TILE="YES" # "YES" to save background in tile space
 
-THISDATE=${THISDATE:-"2016020123"}
+source ${analdate}
+
+THISDATE=$STARTDATE
 
 echo 'THISDATE in land DA, '$THISDATE
 
@@ -99,7 +103,7 @@ fi
 if  [[ $SAVE_TILE == "YES" ]]; then
 for tile in 1 2 3 4 5 6 
 do
-cp ${RSTRDIR}/${FILEDATE}.sfc_data.tile${tile}.nc  ${OUTDIR}/restarts/${FILEDATE}.sfc_data_back.tile${tile}.nc
+cp ${RSTRDIR}/${FILEDATE}.sfc_data.tile${tile}.nc  ${OUTDIR}/restarts/tile/${FILEDATE}.sfc_data_back.tile${tile}.nc
 done
 fi 
 
@@ -128,7 +132,7 @@ fi
 
 # stage synthetic obs.
 if [[ $ASSIM_SYNTH == "YES" ]]; then
-ln -s $OBSDIR/synthetic_noahmp/IODA.synthetic_gswp_obs.${YYYY}${MM}${DD}18.nc  synth_${YYYY}${MM}${DD}.nc
+ln -s $OBSDIR/IODA.synthetic_gswp_obs.${YYYY}${MM}${DD}23.nc  synth_${YYYY}${MM}${DD}.nc
 fi 
 
 # prepare IMS
@@ -245,5 +249,5 @@ fi
 # keep data
 if [ $SAVE_INCR == "YES" ]; then
         # increments
-        cp ${WORKDIR}/${FILEDATE}.xainc.sfc_data.tile*.nc  ${OUTDIR}/DA/jedi_incr/
+        cp ${WORKDIR}/${FILEDATE}.xainc.sfc_data.tile*.nc ${OUTDIR}/DA/jedi_incr/
 fi 
