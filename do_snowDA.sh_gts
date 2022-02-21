@@ -128,8 +128,7 @@ module load intelpython/3.6.8
 
 # stage GTS
 if [[ $ASSIM_GTS == "YES" ]]; then
-ln -s $OBSDIR/GTS/data_proc/${YYYY}${MM}/adpsfc_snow_${YYYY}${MM}${DD}${HH}.nc4  gts_${YYYY}${MM}${DD}${HH}.nc
-#ln -s $OBSDIR/GTS/data_proc/${YYYY}${MM}/adpsfc_snow_${YYYY}${MM}${DD}00.nc4  gts_${YYYY}${MM}${DD}00.nc
+ln -s $OBSDIR/GTS/data_proc/${YYYY}${MM}/adpsfc_snow_${YYYY}${MM}${DD}${HH}.nc  gts_${YYYY}${MM}${DD}${HH}.nc
 fi 
 
 # stage GHCN

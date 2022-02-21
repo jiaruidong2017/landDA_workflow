@@ -30,10 +30,9 @@ RSTRDIR=$WORKDIR/restarts/tile # is running offline cycling will be here
 
 # DA options (select "YES" to assimilate)
 ASSIM_IMS=NO
-ASSIM_GHCN=NO
-ASSIM_GTS=YES
+ASSIM_GHCN=YES
 ASSIM_SYNTH=NO
-JEDI_YAML=letkf_snow_offline_GTS_C96.yaml
+JEDI_YAML=letkf_snow_offline_GHCN_C96.yaml
 
 # executable directories
 
@@ -126,16 +125,10 @@ export PYTHONPATH="${IODA_BUILD_DIR}/lib/pyiodaconv":"${IODA_BUILD_DIR}/lib/pyth
 # use a different version of python for ioda converter (keep for create_ensemble, as latter needs netCDF4)
 module load intelpython/3.6.8 
 
-# stage GTS
-if [[ $ASSIM_GTS == "YES" ]]; then
-ln -s $OBSDIR/GTS/data_proc/${YYYY}${MM}/adpsfc_snow_${YYYY}${MM}${DD}${HH}.nc4  gts_${YYYY}${MM}${DD}${HH}.nc
-#ln -s $OBSDIR/GTS/data_proc/${YYYY}${MM}/adpsfc_snow_${YYYY}${MM}${DD}00.nc4  gts_${YYYY}${MM}${DD}00.nc
-fi 
-
 # stage GHCN
 if [[ $ASSIM_GHCN == "YES" ]]; then
 ln -s $OBSDIR/GHCN/data_proc/ghcn_snwd_ioda_${YYYY}${MM}${DD}.nc  ghcn_${YYYY}${MM}${DD}.nc
-fi
+fi 
 
 # stage synthetic obs.
 if [[ $ASSIM_SYNTH == "YES" ]]; then
